@@ -3,12 +3,10 @@ import {
     ElButton,
     ElMessageBox,
     ComponentSize,
-    FormInstance,
-    FormRules,
 } from "element-plus";
 import { ref } from "vue";
-import { router, useForm } from "@inertiajs/vue3";
-import Swal from 'sweetalert2'
+import { useForm } from "@inertiajs/vue3";
+import Swal from "sweetalert2";
 
 interface RuleForm {
     name: string;
@@ -18,7 +16,7 @@ interface RuleForm {
 
 const props = defineProps({
     user: {
-        type: Array,
+        type: Object,
         default: () => [],
     },
 });
@@ -53,7 +51,8 @@ const confirmClick = async () => {
             `Are you confirm update ${formData.name} data ?`
         ).then(() =>
             formData.patch(route("manage.user.update"), {
-                onSuccess: () => Swal.mixin({
+                onSuccess: () =>
+                    Swal.mixin({
                         toast: true,
                         position: "top-end",
                         showConfirmButton: false,
@@ -63,9 +62,9 @@ const confirmClick = async () => {
                         icon: "success",
                         title: "Updated Successfully!",
                     }),
-                  })
+            })
         );
-        dialogFormVisible.value = false
+        dialogFormVisible.value = false;
     } catch {
         // User cancelled
     }
@@ -77,7 +76,6 @@ const confirmClick = async () => {
 
     <el-dialog
         v-model="dialogFormVisible"
-        :direction="direction"
         :before-close="handleClose"
         class="w-screen"
         title="Detail or Update User Data"

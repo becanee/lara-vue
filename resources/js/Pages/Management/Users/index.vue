@@ -1,26 +1,30 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
-import UserDetailDrawer from "@/Mycomponents/UserDetailDrawer.vue";
+import UserDetailDrawer from "@/MyComponents/UserDetailDrawer.vue";
 import { Head } from "@inertiajs/vue3";
 import { ElTable } from "element-plus";
 import { router } from "@inertiajs/vue3";
 
 const props = defineProps({
-    status: {
-        type: Array,
+    userDatas: {
+        type: Object,
         default: () => [],
     },
-    userDatas: {
-        type: Array,
-        default: () => [],
+    auth: {
+        type: Object,
+        required: true,
     },
 });
 
+const checkPermission = (permissionName: string) => {
+    return props.auth.user.permissions.some(
+        (permission: any) => permission.name === permissionName
+    );
+};
+
 const currentPage2 = ref(props.userDatas.current_page);
 const pageSize2 = ref(props.userDatas.per_page);
-const disabled = ref(false);
-const background = ref(false);
 
 const handlePrevChange = (val: number) => {
     router.get(props.userDatas.prev_page_url);
@@ -63,22 +67,28 @@ const handleNextChange = (val: number) => {
                                 </div>
                             </template>
                         </el-table-column>
-                        <el-table-column fixed="right" width="100">
+                        <el-table-column fixed="right" width="100" label="Menu">
                             <template #default="scope">
-                                <UserDetailDrawer :user="scope.row" />
+                                <div
+                                    v-if="
+                                        checkPermission(
+                                            'update_user_management'
+                                        )
+                                    "
+                                >
+                                    <UserDetailDrawer :user="scope.row" />
+                                </div>
                             </template>
                         </el-table-column>
                     </el-table>
 
                     <div class="demo-pagination-block mt-5">
-                        <!-- <div class="demonstration">Change page size</div> -->
                         <el-pagination
                             v-model:current-page="currentPage2"
                             v-model:page-size="pageSize2"
                             :page-sizes="[5, 10, 50, 100]"
-                            :size="size"
                             :disabled="false"
-                            :background="false"
+                            :background="true"
                             layout="prev, pager, next, ->, total"
                             :total="props.userDatas.total"
                             @prev-click="handlePrevChange"

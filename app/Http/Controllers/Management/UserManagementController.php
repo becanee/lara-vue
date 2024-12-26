@@ -2,23 +2,36 @@
 
 namespace App\Http\Controllers\Management;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
 
-class UserManagementController extends Controller
+class UserManagementController extends BaseController
 {
+    /**
+     * Instantiate a new UserController instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware('permission:view_user_management|update_user_management|delete_user_management', ['only' => ['index','show']]);
+        $this->middleware('permission:update_user_management', ['only' => ['edit','update']]);
+        $this->middleware('permission:delete_user_management', ['only' => ['destroy']]);
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $userDatas = User::query()->paginate(10);
+        $userDatas = User::query();
         
+        // dd(Auth::user());
+
         return Inertia::render('Management/Users/index', [
-            'status' => session('status'),
-            'userDatas' => $userDatas, 
+            'userDatas' => $userDatas->orderBy('id', 'desc')->paginate(10),
         ]);
     }
 

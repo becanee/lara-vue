@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { reactive, toRefs } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import { Link } from "@inertiajs/vue3";
 import { TbMoon, TbSunHigh } from 'vue-icons-plus/tb';
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
-import Dropdown from "@/Components/Dropdown.vue";
-import DropdownLink from "@/Components/DropdownLink.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 
@@ -59,22 +56,22 @@ const toggleDark = useToggle(isDark);
 
             <!-- User Dropdown -->
             <div class="relative ms-3">
-              <el-col :span="8">
+              <el-col :span="24">
                 <el-dropdown trigger="click">
                   <span class="el-dropdown-link">
                     <div class="flex ml-1 mt-4">
                       <el-avatar shape="square" size="small" src="https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png" />
-                      <p class="mt-1 ml-2">{{ $page.props.auth.user.name }}</p>
+                      <p class="mt-2 ml-2">{{ $page.props.auth.user.name }}</p>
                     </div>
                     <el-icon class="el-icon--right"><arrow-down /></el-icon>
                   </span>
 
                   <template #dropdown>
                     <el-dropdown-menu>
-                      <el-dropdown-item :icon="Plus">
+                      <el-dropdown-item>
                         <Link :href="route('profile.edit')">Profile</Link>
                       </el-dropdown-item>
-                      <el-dropdown-item :icon="CirclePlusFilled">
+                      <el-dropdown-item>
                         <Link :href="route('logout')" method="post" as="button">Log Out</Link>
                       </el-dropdown-item>
                     </el-dropdown-menu>
